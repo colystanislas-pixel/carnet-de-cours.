@@ -1,0 +1,631 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Carnet de Cours</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Disposition : carnet de pointage pour téléphone. Total à encaisser en tête, élèves en liste unique, relevé de fin de mois présenté comme une feuille à montrer, barre d'onglets en bas. */
+:root{
+  --bg:#EEF2F1; --surface:#FFFFFF; --surface-2:#E3EAE7; --ink:#12201C; --ink-2:#4A5D57; --line:#D3DCD9;
+  --accent:#08694F; --on-accent:#FFFFFF; --on-accent-2:#D9EFE8; --accent-soft:#D3EEE5; --hero-line:rgba(255,255,255,.3);
+  --due:#A63D08; --due-soft:#F8E3D6; --scrim:rgba(18,32,28,.5);
+  --f-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --f-body:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1715; --surface:#16231F; --surface-2:#1E2F2A; --ink:#E6F0EC; --ink-2:#93A8A1; --line:#2A3D37;
+    --accent:#3FD1A5; --on-accent:#06231B; --on-accent-2:#0B3A2D; --accent-soft:#17382F; --hero-line:rgba(6,35,27,.3);
+    --due:#F5995F; --due-soft:#3A2416; --scrim:rgba(0,0,0,.65);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1715; --surface:#16231F; --surface-2:#1E2F2A; --ink:#E6F0EC; --ink-2:#93A8A1; --line:#2A3D37;
+  --accent:#3FD1A5; --on-accent:#06231B; --on-accent-2:#0B3A2D; --accent-soft:#17382F; --hero-line:rgba(6,35,27,.3);
+  --due:#F5995F; --due-soft:#3A2416; --scrim:rgba(0,0,0,.65);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.45 var(--f-body);-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,p{margin:0}
+h1,h2{font-family:var(--f-display);text-wrap:balance}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.muted{color:var(--ink-2)}
+.c{text-align:center}
+.mono{font-family:var(--f-mono);font-weight:500;font-size:13px;font-variant-numeric:tabular-nums}
+
+.shell{max-width:560px;margin:0 auto;padding-block:16px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;min-height:40px}
+.top h1{font-size:24px;line-height:1.1;font-weight:800;letter-spacing:-.01em}
+.back{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 12px 0 6px;border:0;background:transparent;color:var(--accent);font-weight:600}
+.local-note{margin-bottom:12px;padding:10px 12px;border-radius:10px;background:var(--due-soft);color:var(--due);font-size:14px;font-weight:500}
+
+.mbar{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;margin-bottom:12px}
+.mlabel{text-align:center;font:700 18px/1.2 var(--f-display)}
+.icon{width:48px;height:48px;border:0;border-radius:12px;background:var(--surface);color:var(--ink);display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line)}
+.link{display:block;margin:2px auto 0;padding:2px 6px;border:0;background:transparent;color:var(--accent);font-size:13px;font-weight:600}
+
+.hero{background:var(--accent);color:var(--on-accent);border-radius:20px;padding:20px 20px 16px;margin-bottom:20px}
+.hero .lbl{font:600 12px/1 var(--f-body);letter-spacing:.09em;text-transform:uppercase;color:var(--on-accent-2)}
+.hero .big{display:flex;align-items:baseline;gap:8px;margin:12px 0 16px;font:800 clamp(44px,13vw,60px)/1 var(--f-display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.hero .big small{font:600 15px var(--f-body);letter-spacing:.04em;color:var(--on-accent-2)}
+.hstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--hero-line);padding-top:12px}
+.hstats div{min-width:0;padding-left:12px;border-left:1px solid var(--hero-line)}
+.hstats div:first-child{padding-left:0;border-left:0}
+.hstats span{display:block;font:500 12px var(--f-body);color:var(--on-accent-2)}
+.hstats b{display:block;font:600 15px var(--f-mono);font-variant-numeric:tabular-nums}
+
+.sec{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 8px}
+.sec h2{font-size:18px;font-weight:700}
+.sec .count{color:var(--ink-2);font-size:14px}
+
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;padding:12px 14px;background:transparent;border:0;text-align:left}
+.row+.row{border-top:1px solid var(--line)}
+.row .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{font-size:14px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .rt{display:grid;gap:5px;justify-items:end}
+.ava{width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:700 18px var(--f-display)}
+.amt{font:700 18px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:5px 9px;border-radius:999px;font:600 12px/1 var(--f-body)}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.due{background:var(--due-soft);color:var(--due)}
+.pill.off{background:var(--surface-2);color:var(--ink-2)}
+
+.empty{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 18px}
+.empty h2{font-size:20px;font-weight:800;margin-bottom:12px}
+.steps{margin:0 0 18px;padding-left:22px;display:grid;gap:8px;color:var(--ink-2)}
+.steps li::marker{font-family:var(--f-mono);font-weight:600;color:var(--accent)}
+
+.name-big{font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-.01em;margin-bottom:4px;overflow-wrap:anywhere}
+.paper{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px 16px}
+.ledh,.led{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:2px 16px;align-items:baseline;width:100%;text-align:left}
+.ledh{padding:8px 0;font:600 11px/1 var(--f-body);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+.ledh span:nth-child(n+2),.led .dur-c,.led .am-c{text-align:right}
+.led{padding:12px 0;background:transparent;border:0;border-top:1px solid var(--line)}
+.led .d{font:500 14px var(--f-mono);font-variant-numeric:tabular-nums}
+.led .t{grid-column:1;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
+.led .am-c{font-weight:700;font-variant-numeric:tabular-nums}
+.led .dur-c{font:500 14px var(--f-mono);font-variant-numeric:tabular-nums}
+.none{padding:14px 0;border-top:1px solid var(--line);color:var(--ink-2)}
+.sub-h{margin:20px 0 8px;font:700 16px var(--f-display)}
+
+.sum{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 16px}
+.sum .ln{display:flex;justify-content:space-between;gap:12px;padding:8px 0}
+.sum .ln b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.sum .final{border-top:2px solid var(--ink);margin-top:6px;padding:14px 0 10px;align-items:baseline}
+.sum .final span{font-weight:600}
+.sum .final b{font:800 30px/1 var(--f-display);color:var(--due)}
+.sum .final.ok b{color:var(--accent)}
+
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.acts .wide{grid-column:1/-1}
+.btn{display:grid;place-items:center;min-height:48px;padding:0 16px;border:0;border-radius:12px;font:600 16px var(--f-body);text-align:center;text-decoration:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:var(--due-soft);color:var(--due)}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tabbar-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:48px;border:0;background:transparent;color:var(--ink-2);font:600 12px var(--f-body)}
+.tab[aria-current="page"]{color:var(--accent)}
+.tab:disabled,.fab:disabled{opacity:.45}
+.fab{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 20px 0 16px;border:0;border-radius:999px;background:var(--accent);color:var(--on-accent);font:700 16px var(--f-body)}
+
+.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet-card{position:relative;width:100%;max-width:560px;max-height:92%;overflow-y:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:20px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-card h2{font-size:22px;font-weight:800;margin-bottom:14px}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field>label,.field>.lab{font-size:13px;font-weight:600;color:var(--ink-2)}
+.field input[type="text"],.field input[type="date"],.field select,.field textarea{width:100%;min-height:48px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);font-size:16px}
+.field textarea{min-height:220px;font:400 14px/1.5 var(--f-mono)}
+.hint{font-size:13px;color:var(--ink-2)}
+.slider{width:100%;height:36px;accent-color:var(--accent)}
+.range-l{display:flex;justify-content:space-between;margin-top:-6px;font:500 12px var(--f-mono);color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:transparent;font:600 14px var(--f-body)}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.dur{display:grid;grid-template-columns:56px minmax(0,1fr) 56px;align-items:center;gap:10px;margin-bottom:10px}
+.dur output{text-align:center;font:800 28px var(--f-display);font-variant-numeric:tabular-nums}
+.step{height:52px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);font:600 24px var(--f-body)}
+.preview{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:4px 0 14px;padding:12px 14px;border-radius:12px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.preview b{font:800 24px var(--f-display);font-variant-numeric:tabular-nums}
+.err{margin:0 0 12px;color:var(--due);font-weight:600}
+.checkrow{display:flex;align-items:center;gap:12px;min-height:44px}
+.checkrow input{width:22px;height:22px;accent-color:var(--accent)}
+.actions{display:grid;gap:10px}
+.sheet-card .actions{position:sticky;bottom:0;z-index:2;padding:12px 0 calc(16px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;max-width:calc(100% - 32px);padding:12px 16px;border-radius:12px;background:var(--ink);color:var(--bg);font-weight:600;font-size:14px;text-align:center}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="shell"><div id="app"></div></div>
+
+<nav class="tabbar" aria-label="Navigation principale"><div class="tabbar-in">
+  <button class="tab" id="tab-mois" data-a="tab-mois" disabled><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Mois</span></button>
+  <button class="fab" id="tab-add" data-a="new-session" disabled><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Séance</span></button>
+  <button class="tab" id="tab-eleves" data-a="tab-eleves" disabled><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 5.2a3.4 3.4 0 0 1 0 6.6M18 14.8c2 .6 3.2 2.3 3.5 5.2"/></svg><span>Élèves</span></button>
+</div></nav>
+
+<div id="sheet" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function(){
+'use strict';
+
+/*PURE:START*/
+var MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var MON_SHORT=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+var DAYS=['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+function pad(n){return String(n).padStart(2,'0');}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function ymOf(ds){return ds.slice(0,7);}
+function ymLabel(ym){var p=ym.split('-').map(Number);return MONTHS[p[1]-1]+' '+p[0];}
+function shiftYm(ym,k){var p=ym.split('-').map(Number);var t=p[0]*12+(p[1]-1)+k;return Math.floor(t/12)+'-'+pad(t%12+1);}
+function dateLabel(ds){var p=ds.split('-').map(Number);var dt=new Date(p[0],p[1]-1,p[2]);return DAYS[dt.getDay()]+' '+p[2]+' '+MON_SHORT[p[1]-1];}
+function fmtN(n){var neg=n<0;var s=String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g,' ');return (neg?'−':'')+s;}
+function fcfa(n){return fmtN(n)+' F';}
+function fmtDur(min){var h=Math.floor(min/60),m=min%60;if(!h)return m+' min';return h+' h'+(m?' '+pad(m):'');}
+function sessionAmount(s){return Math.round(s.min/60*s.rate);}
+function num(v){return parseInt(String(v).replace(/\D/g,''),10);}
+function normPhone(p){var d=String(p||'').replace(/\D/g,'');if(d.indexOf('00')===0)d=d.slice(2);if(d.length===9)d='221'+d;return d;}
+function totalsFor(data,sid,ym){
+  var min=0,billed=0,paid=0,pb=0,pp=0;
+  Object.keys(data.months).forEach(function(m){
+    var d=data.months[m];
+    d.sessions.forEach(function(s){if(s.sid!==sid)return;var a=sessionAmount(s);if(m===ym){min+=s.min;billed+=a;}else if(m<ym){pb+=a;}});
+    d.payments.forEach(function(p){if(p.sid!==sid)return;if(m===ym){paid+=p.amount;}else if(m<ym){pp+=p.amount;}});
+  });
+  var carry=pb-pp;
+  return {min:min,billed:billed,paid:paid,carry:carry,due:carry+billed-paid};
+}
+/*PURE:END*/
+
+var $=function(s,r){return (r||document).querySelector(s);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var clone=function(x){return JSON.parse(JSON.stringify(x));};
+var uid=function(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);};
+
+var ICON={
+  left:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+  right:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
+};
+
+var DATA={students:[],months:{}};
+var RATE_MIN=1000,RATE_MAX=10000;
+var S={tab:'mois',ym:ymOf(todayStr()),sid:null,sheet:null,loaded:false,mode:'pending',lastSid:null};
+var T=function(sid,ym){return totalsFor(DATA,sid,ym);};
+function studentById(id){return DATA.students.filter(function(s){return s.id===id;})[0]||null;}
+function monthDoc(ym){if(!DATA.months[ym])DATA.months[ym]={sessions:[],payments:[]};return DATA.months[ym];}
+function findSession(id){var ks=Object.keys(DATA.months);for(var i=0;i<ks.length;i++){var s=DATA.months[ks[i]].sessions.filter(function(x){return x.id===id;})[0];if(s)return {s:s,ym:ks[i]};}return null;}
+function findPayment(id){var ks=Object.keys(DATA.months);for(var i=0;i<ks.length;i++){var p=DATA.months[ks[i]].payments.filter(function(x){return x.id===id;})[0];if(p)return {p:p,ym:ks[i]};}return null;}
+function hasHistory(sid){return Object.keys(DATA.months).some(function(m){var d=DATA.months[m];return d.sessions.some(function(s){return s.sid===sid;})||d.payments.some(function(p){return p.sid===sid;});});}
+function defaultDate(){return S.ym===ymOf(todayStr())?todayStr():S.ym+'-01';}
+function byDate(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.id<b.id?-1:1);}
+
+/* ---------- Enregistrement ---------- */
+var LS_KEY='carnet-cours-v1';
+var col=null,inflight={},chain={},tt=null;
+function toast(m){var t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true;},3500);}
+function docBody(id){
+  if(id==='eleves')return {students:DATA.students};
+  var m=DATA.months[id.slice(2)]||{sessions:[],payments:[]};
+  return {sessions:m.sessions,payments:m.payments};
+}
+function persist(id){
+  if(S.mode==='local'){try{localStorage.setItem(LS_KEY,JSON.stringify(DATA));}catch(e){toast('Impossible d’enregistrer sur cet appareil.');}return;}
+  if(S.mode!=='db'){toast('Enregistrement indisponible pour le moment.');return;}
+  inflight[id]=(inflight[id]||0)+1;
+  chain[id]=(chain[id]||Promise.resolve()).then(function(){
+    return col.doc(id).set(clone(docBody(id)));
+  }).catch(function(){
+    toast('Enregistrement impossible. Réessaie dans un instant.');
+  }).then(function(){inflight[id]--;});
+}
+function applySnap(snap){
+  snap.docs.forEach(function(d){
+    var id=d.id;if(inflight[id]>0)return;
+    var data=d.data()||{};
+    if(id==='eleves')DATA.students=clone(data.students||[]);
+    else if(id.indexOf('m_')===0)DATA.months[id.slice(2)]={sessions:clone(data.sessions||[]),payments:clone(data.payments||[])};
+  });
+  S.loaded=true;render();
+}
+function fallbackLocal(){
+  S.mode='local';
+  try{var raw=localStorage.getItem(LS_KEY);if(raw){var d=JSON.parse(raw);DATA={students:d.students||[],months:d.months||{}};}}catch(e){}
+  S.loaded=true;render();
+}
+async function init(){
+  render();
+  var db=null,id=null;
+  try{
+    var c=window.claude;
+    if(c&&c.use){
+      var r=await Promise.all([c.use('db'),c.use('user')]);
+      db=r[0];id=r[1]?await r[1].id():null;
+    }
+  }catch(e){}
+  if(db&&id){
+    col=db.collection('data/users/'+id);S.mode='db';
+    var first=true;
+    col.onSnapshot(function(snap){first=false;applySnap(snap);},function(){
+      if(first){fallbackLocal();}else{toast('Synchronisation interrompue. Recharge la page.');}
+    });
+  }else{fallbackLocal();}
+}
+
+/* ---------- Texte du relevé ---------- */
+function statementText(st,ym){
+  var m=DATA.months[ym]||{sessions:[],payments:[]};
+  var ss=m.sessions.filter(function(s){return s.sid===st.id;}).sort(byDate);
+  var t=T(st.id,ym),L=[];
+  L.push('Relevé des cours d’informatique');
+  L.push(st.name+' · '+ymLabel(ym));L.push('');
+  if(!ss.length)L.push('Aucune séance ce mois-ci.');
+  ss.forEach(function(s){L.push(dateLabel(s.date)+' · '+fmtDur(s.min)+(s.topic?' ('+s.topic+')':'')+' · '+fcfa(sessionAmount(s)));});
+  L.push('');
+  L.push('Total : '+fmtDur(t.min)+' · '+fcfa(t.billed));
+  if(t.carry)L.push((t.carry>0?'Reste des mois précédents : ':'Avance des mois précédents : ')+fcfa(Math.abs(t.carry)));
+  if(t.paid)L.push('Déjà payé : '+fcfa(t.paid));
+  L.push(t.due>0?'Reste à payer : '+fcfa(t.due):(t.due<0?'Avance : '+fcfa(-t.due):'Compte soldé'));
+  return L.join('\n');
+}
+
+/* ---------- Vues ---------- */
+function noteBar(){return S.mode==='local'?'<p class="local-note">Les données restent sur cet appareil uniquement.</p>':'';}
+function monthBar(){
+  var cur=S.ym===ymOf(todayStr());
+  return '<div class="mbar"><button class="icon" data-a="prev" aria-label="Mois précédent">'+ICON.left+'</button>'+
+    '<div class="mlabel">'+ymLabel(S.ym)+(cur?'':'<button class="link" data-a="today">Revenir à ce mois</button>')+'</div>'+
+    '<button class="icon" data-a="next" aria-label="Mois suivant">'+ICON.right+'</button></div>';
+}
+function visibleStudents(ym){
+  return DATA.students.filter(function(st){
+    if(!st.archived)return true;
+    var t=T(st.id,ym);return t.min>0||t.paid>0||t.due>0;
+  });
+}
+function viewLoading(){
+  return '<div class="top"><h1>Carnet de cours</h1></div>'+
+    '<section class="hero"><div class="lbl">Reste à encaisser</div><div class="big"><span>—</span><small>FCFA</small></div></section>'+
+    '<p class="muted c">Chargement de tes élèves…</p>';
+}
+function emptyStudents(){
+  return '<section class="empty"><h2>Commence par ton premier élève</h2><ol class="steps">'+
+    '<li>Ajoute l’élève avec son tarif : 2 500 ou 3 000 F de l’heure.</li>'+
+    '<li>Après chaque cours, note la date et la durée.</li>'+
+    '<li>En fin de mois, ouvre son relevé et montre-lui le total.</li></ol>'+
+    '<button class="btn primary" data-a="new-student" style="width:100%">Ajouter un élève</button></section>';
+}
+function viewMois(){
+  var list=visibleStudents(S.ym),min=0,billed=0,paid=0,due=0;
+  list.forEach(function(st){var t=T(st.id,S.ym);min+=t.min;billed+=t.billed;paid+=t.paid;if(t.due>0)due+=t.due;});
+  var h='<div class="top"><h1>Carnet de cours</h1></div>'+noteBar()+monthBar();
+  h+='<section class="hero"><div class="lbl">Reste à encaisser</div><div class="big"><span>'+fmtN(due)+'</span><small>FCFA</small></div>'+
+    '<div class="hstats"><div><span>Heures</span><b>'+(min?fmtDur(min):'0 h')+'</b></div><div><span>Facturé</span><b>'+fmtN(billed)+'</b></div><div><span>Encaissé</span><b>'+fmtN(paid)+'</b></div></div></section>';
+  if(!DATA.students.length)return h+emptyStudents();
+  h+='<div class="sec"><h2>Élèves</h2><span class="count">'+list.length+'</span></div><div class="list">';
+  list.forEach(function(st){
+    var t=T(st.id,S.ym);
+    var amount=t.due>0?'<span class="amt">'+fcfa(t.due)+'</span><span class="pill due">À payer</span>':
+      ((t.billed>0||t.carry!==0||t.paid>0)?'<span class="pill ok">Soldé</span>':'<span class="pill off">Rien ce mois</span>');
+    h+='<button class="row" data-a="open-student" data-id="'+esc(st.id)+'"><span class="ava" aria-hidden="true">'+esc(st.name.trim().charAt(0).toUpperCase())+'</span>'+
+      '<span style="min-width:0"><div class="nm">'+esc(st.name)+'</div><div class="sub"><span class="mono">'+(t.min?fmtDur(t.min):'0 h')+'</span> · '+fmtN(st.rate)+' F/h</div></span>'+
+      '<span class="rt">'+amount+'</span></button>';
+  });
+  return h+'</div>';
+}
+function viewEleves(){
+  var h='<div class="top"><h1>Élèves</h1><button class="btn primary" data-a="new-student" style="min-height:44px">Ajouter</button></div>'+noteBar();
+  if(!DATA.students.length)return h+emptyStudents();
+  h+='<div class="list">';
+  DATA.students.forEach(function(st){
+    h+='<button class="row" data-a="edit-student" data-id="'+esc(st.id)+'"><span class="ava" aria-hidden="true">'+esc(st.name.trim().charAt(0).toUpperCase())+'</span>'+
+      '<span style="min-width:0"><div class="nm">'+esc(st.name)+'</div><div class="sub">'+fmtN(st.rate)+' F/h'+(st.phone?' · '+esc(st.phone):'')+'</div></span>'+
+      '<span class="rt">'+(st.archived?'<span class="pill off">Archivé</span>':'')+'</span></button>';
+  });
+  h+='</div>';
+  h+='<div class="sec" style="margin-top:28px"><h2>Données</h2></div><p class="hint" style="margin-bottom:10px">Efface tous les élèves, les séances et les paiements pour repartir de zéro.</p><button class="btn danger" data-a="open-reset" style="width:100%">Effacer toutes les données</button>';
+  return h;
+}
+function viewReleve(){
+  var st=studentById(S.sid);
+  if(!st){S.sid=null;return viewMois();}
+  var m=DATA.months[S.ym]||{sessions:[],payments:[]};
+  var ss=m.sessions.filter(function(s){return s.sid===st.id;}).sort(byDate);
+  var ps=m.payments.filter(function(p){return p.sid===st.id;}).sort(byDate);
+  var t=T(st.id,S.ym);
+  var wa='https://wa.me/'+normPhone(st.phone)+'?text='+encodeURIComponent(statementText(st,S.ym));
+  var h='<div class="top"><button class="back" data-a="back">'+ICON.left+'<span>Mois</span></button></div>'+noteBar();
+  h+='<h1 class="name-big">'+esc(st.name)+'</h1><p class="muted" style="margin-bottom:14px">'+fmtN(st.rate)+' F de l’heure'+(st.archived?' · archivé':'')+'</p>'+monthBar();
+  h+='<div class="paper"><div class="ledh"><span>Séance</span><span>Durée</span><span>Montant</span></div>';
+  if(!ss.length)h+='<p class="none">Aucune séance ce mois-ci.</p>';
+  ss.forEach(function(s){
+    h+='<button class="led" data-a="edit-session" data-id="'+esc(s.id)+'"><span class="d">'+dateLabel(s.date)+'</span><span class="dur-c">'+fmtDur(s.min)+'</span><span class="am-c">'+fcfa(sessionAmount(s))+'</span>'+
+      (s.topic?'<span class="t">'+esc(s.topic)+'</span>':'')+'</button>';
+  });
+  h+='</div>';
+  if(ss.length)h+='<p class="hint" style="margin-top:8px">Touche une séance pour changer sa date ou la supprimer.</p>';
+  h+='<div class="sum"><div class="ln"><span>Heures du mois</span><b>'+(t.min?fmtDur(t.min):'0 h')+'</b></div>'+
+    '<div class="ln"><span>Montant du mois</span><b>'+fcfa(t.billed)+'</b></div>';
+  if(t.carry)h+='<div class="ln"><span>'+(t.carry>0?'Reste des mois précédents':'Avance des mois précédents')+'</span><b>'+(t.carry>0?'':'−')+fcfa(Math.abs(t.carry))+'</b></div>';
+  if(t.paid)h+='<div class="ln"><span>Payé ce mois</span><b>−'+fcfa(t.paid)+'</b></div>';
+  h+='<div class="ln final'+(t.due>0?'':' ok')+'"><span>'+(t.due>0?'Reste à payer':(t.due<0?'Avance versée':'Compte soldé'))+'</span><b>'+(t.due>0?fcfa(t.due):(t.due<0?fcfa(-t.due):'0 F'))+'</b></div></div>';
+  if(ps.length){
+    h+='<h2 class="sub-h">Paiements reçus</h2><div class="paper">';
+    ps.forEach(function(p,i){
+      h+='<button class="led" data-a="edit-payment" data-id="'+esc(p.id)+'" style="'+(i===0?'border-top:0':'')+'"><span class="d">'+dateLabel(p.date)+'</span><span class="dur-c">'+esc(p.note||'')+'</span><span class="am-c">'+fcfa(p.amount)+'</span></button>';
+    });
+    h+='</div>';
+  }
+  h+='<div class="acts"><button class="btn ghost" data-a="new-session" data-sid="'+esc(st.id)+'">Ajouter une séance</button><button class="btn ghost" data-a="new-payment" data-sid="'+esc(st.id)+'">Paiement reçu</button>'+
+    '<a class="btn primary wide" href="'+wa+'" target="_blank" rel="noopener">Envoyer le relevé sur WhatsApp</a>'+
+    '<button class="btn ghost wide" data-a="copy" data-sid="'+esc(st.id)+'">Copier le relevé</button></div>';
+  return h;
+}
+function renderTabs(){
+  var on=S.loaded;
+  ['tab-mois','tab-eleves','tab-add'].forEach(function(id){$('#'+id).disabled=!on;});
+  var el=S.tab==='eleves'&&!S.sid;
+  $('#tab-mois').setAttribute('aria-current',el?'false':'page');
+  $('#tab-eleves').setAttribute('aria-current',el?'page':'false');
+}
+function render(){
+  var h=!S.loaded?viewLoading():(S.sid?viewReleve():(S.tab==='eleves'?viewEleves():viewMois()));
+  $('#app').innerHTML=h;
+  renderTabs();
+}
+
+/* ---------- Feuilles de saisie ---------- */
+function rateSlider(id,val){
+  return '<input id="'+id+'-r" class="slider" type="range" min="'+RATE_MIN+'" max="'+RATE_MAX+'" step="250" value="'+(val||3000)+'" aria-label="Choisir le tarif avec le curseur"><div class="range-l"><span>1 000 F</span><span>10 000 F</span></div>';
+}
+function noStudentSheet(){
+  return '<h2 id="sh-title">Séance</h2><p class="muted" style="margin-bottom:16px">Ajoute d’abord un élève pour noter ses séances.</p>'+
+    '<div class="actions"><button class="btn primary" data-a="new-student">Ajouter un élève</button><button class="btn ghost" data-a="close">Fermer</button></div>';
+}
+function sheetSession(cfg){
+  var f=cfg.id?findSession(cfg.id):null,ed=f&&f.s;
+  var studs=DATA.students.filter(function(s){return !s.archived||(ed&&ed.sid===s.id);});
+  if(!studs.length)return noStudentSheet();
+  var has=function(id){return id&&studs.some(function(s){return s.id===id;});};
+  var sid=ed?ed.sid:(has(cfg.sid)?cfg.sid:(has(S.lastSid)?S.lastSid:studs[0].id));
+  var st=studentById(sid),date=ed?ed.date:defaultDate(),min=ed?ed.min:60,rate=ed?ed.rate:st.rate;
+  var opts=studs.map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sid?' selected':'')+'>'+esc(s.name)+'</option>';}).join('');
+  var chips=[60,90,120,180].map(function(v){return '<button type="button" class="chip" data-a="dur-set" data-v="'+v+'">'+fmtDur(v)+'</button>';}).join('');
+  return '<h2 id="sh-title">'+(ed?'Modifier la séance':'Nouvelle séance')+'</h2>'+
+    '<div class="field"><label for="f-sid">Élève</label><select id="f-sid">'+opts+'</select></div>'+
+    '<div class="field"><label for="f-date">Date</label><input id="f-date" type="date" value="'+date+'"></div>'+
+    '<div class="field"><span class="lab" id="f-dur-l">Durée</span><div class="dur" id="f-dur" data-min="'+min+'" role="group" aria-labelledby="f-dur-l">'+
+      '<button type="button" class="step" data-a="dur-minus" aria-label="Retirer 15 minutes">−</button><output id="f-durtxt">'+fmtDur(min)+'</output><button type="button" class="step" data-a="dur-plus" aria-label="Ajouter 15 minutes">+</button></div>'+
+      '<div class="chips">'+chips+'</div></div>'+
+    '<div class="field"><label for="f-rate">Tarif de l’heure (F), de 1 000 à 10 000</label><input id="f-rate" type="text" inputmode="numeric" value="'+rate+'">'+rateSlider('f-rate',rate)+'</div>'+
+    '<div class="field"><label for="f-topic">Sujet (facultatif)</label><input id="f-topic" type="text" maxlength="60" placeholder="Word, Excel, Internet…" value="'+esc(ed?ed.topic:'')+'"></div>'+
+    '<div class="preview"><span>Montant de la séance</span><b id="f-prev">0 F</b></div>'+
+    '<p class="err" id="f-err" role="alert" hidden></p>'+
+    '<div class="actions"><button class="btn primary" data-a="save-session">Enregistrer</button>'+
+    (ed?'<button class="btn danger" data-a="del-session" data-id="'+esc(ed.id)+'" data-confirm="1">Supprimer la séance</button>':'')+
+    '<button class="btn ghost" data-a="close">Annuler</button></div>';
+}
+function sheetPayment(cfg){
+  var f=cfg.id?findPayment(cfg.id):null,ed=f&&f.p;
+  var studs=DATA.students.filter(function(s){return !s.archived||(ed&&ed.sid===s.id)||s.id===cfg.sid;});
+  if(!studs.length)return noStudentSheet();
+  var has=function(id){return id&&studs.some(function(s){return s.id===id;});};
+  var sid=ed?ed.sid:(has(cfg.sid)?cfg.sid:studs[0].id);
+  var date=ed?ed.date:defaultDate(),amount=ed?ed.amount:'',note=ed?(ed.note||''):'';
+  var opts=studs.map(function(s){return '<option value="'+esc(s.id)+'"'+(s.id===sid?' selected':'')+'>'+esc(s.name)+'</option>';}).join('');
+  var due=T(sid,ymOf(date)).due;
+  var chips=['Espèces','Wave','Orange Money'].map(function(v){return '<button type="button" class="chip" data-a="note-set" data-v="'+v+'">'+v+'</button>';}).join('');
+  return '<h2 id="sh-title">'+(ed?'Modifier le paiement':'Paiement reçu')+'</h2>'+
+    '<div class="field"><label for="f-sid">Élève</label><select id="f-sid">'+opts+'</select></div>'+
+    '<div class="field"><label for="f-date">Date</label><input id="f-date" type="date" value="'+date+'"></div>'+
+    '<div class="field"><label for="f-amt">Montant reçu (F)</label><input id="f-amt" type="text" inputmode="numeric" value="'+amount+'" placeholder="0">'+
+      '<div class="chips" id="f-due-wrap"'+(due>0?'':' hidden')+'><button type="button" class="chip" data-a="pay-all">Tout solder : <span id="f-due">'+fcfa(Math.max(due,0))+'</span></button></div></div>'+
+    '<div class="field"><label for="f-note">Moyen de paiement (facultatif)</label><input id="f-note" type="text" maxlength="30" value="'+esc(note)+'"><div class="chips">'+chips+'</div></div>'+
+    '<p class="err" id="f-err" role="alert" hidden></p>'+
+    '<div class="actions"><button class="btn primary" data-a="save-payment">Enregistrer</button>'+
+    (ed?'<button class="btn danger" data-a="del-payment" data-id="'+esc(ed.id)+'" data-confirm="1">Supprimer le paiement</button>':'')+
+    '<button class="btn ghost" data-a="close">Annuler</button></div>';
+}
+function sheetStudent(cfg){
+  var ed=cfg.id?studentById(cfg.id):null;
+  var rate=ed?ed.rate:'';
+  var chips=[2500,3000].map(function(v){return '<button type="button" class="chip" data-a="rate-set" data-v="'+v+'">'+fmtN(v)+' F</button>';}).join('');
+  var del=ed&&!hasHistory(ed.id);
+  return '<h2 id="sh-title">'+(ed?'Modifier l’élève':'Nouvel élève')+'</h2>'+
+    '<div class="field"><label for="f-name">Nom</label><input id="f-name" type="text" maxlength="60" value="'+esc(ed?ed.name:'')+'" autocomplete="off"></div>'+
+    '<div class="field"><label for="f-srate">Tarif de l’heure (F), de 1 000 à 10 000</label><input id="f-srate" type="text" inputmode="numeric" value="'+rate+'">'+rateSlider('f-srate',rate)+'<div class="chips">'+chips+'</div>'+
+      (ed?'<p class="hint">Le nouveau tarif s’applique aux prochaines séances. Les anciennes gardent leur tarif.</p>':'')+'</div>'+
+    '<div class="field"><label for="f-phone">Numéro WhatsApp (facultatif)</label><input id="f-phone" type="text" inputmode="tel" placeholder="77 123 45 67" value="'+esc(ed?ed.phone:'')+'"><p class="hint">Le relevé s’ouvre directement dans sa conversation.</p></div>'+
+    (ed?'<label class="checkrow"><input type="checkbox" id="f-arch"'+(ed.archived?' checked':'')+'><span>Archiver (ne plus proposer pour de nouvelles séances)</span></label>':'')+
+    '<p class="err" id="f-err" role="alert" hidden></p>'+
+    '<div class="actions" style="margin-top:12px"><button class="btn primary" data-a="save-student">Enregistrer</button>'+
+    (del?'<button class="btn danger" data-a="del-student" data-id="'+esc(ed.id)+'" data-confirm="1">Supprimer l’élève</button>':'')+
+    '<button class="btn ghost" data-a="close">Annuler</button></div>';
+}
+function sheetReset(){
+  var n=DATA.students.length,ns=0,np=0;
+  Object.keys(DATA.months).forEach(function(m){ns+=DATA.months[m].sessions.length;np+=DATA.months[m].payments.length;});
+  return '<h2 id="sh-title">Tout effacer ?</h2><p style="margin-bottom:8px">Tu vas supprimer <b>'+n+' élève'+(n>1?'s':'')+'</b>, <b>'+ns+' séance'+(ns>1?'s':'')+'</b> et <b>'+np+' paiement'+(np>1?'s':'')+'</b>.</p>'+
+    '<p class="muted" style="margin-bottom:8px">Cette action ne peut pas être annulée.</p>'+
+    '<div class="actions"><button class="btn primary" data-a="close">Non, garder mes données</button><button class="btn danger" data-a="do-reset">Oui, tout effacer</button></div>';
+}
+function sheetText(cfg){
+  var st=studentById(cfg.sid);
+  return '<h2 id="sh-title">Relevé à copier</h2><div class="field"><label for="f-text">Touche le texte, sélectionne tout, puis copie.</label><textarea id="f-text" readonly>'+esc(st?statementText(st,S.ym):'')+'</textarea></div>'+
+    '<div class="actions"><button class="btn ghost" data-a="close">Fermer</button></div>';
+}
+function renderSheet(){
+  var el=$('#sheet'),c=S.sheet;
+  if(!c){el.hidden=true;el.innerHTML='';document.body.style.overflow='';return;}
+  var body=c.type==='session'?sheetSession(c):c.type==='payment'?sheetPayment(c):c.type==='student'?sheetStudent(c):c.type==='reset'?sheetReset():sheetText(c);
+  el.innerHTML='<div class="scrim" data-a="close"></div><div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sh-title" tabindex="-1">'+body+'</div>';
+  el.hidden=false;document.body.style.overflow='hidden';
+  if(c.type==='session'){syncDur(parseInt($('#f-dur').dataset.min,10));}
+  if(c.type==='student'){syncRateChips();}
+  if(c.type==='payment'){syncNoteChips();}
+  var card=$('.sheet-card',el);card.focus();
+  if(c.type==='text'){var ta=$('#f-text');ta.focus();ta.select();}
+}
+function openSheet(c){S.sheet=c;renderSheet();}
+function closeSheet(){S.sheet=null;renderSheet();}
+function formErr(m){var e=$('#f-err');e.textContent=m;e.hidden=false;e.scrollIntoView({block:'nearest'});}
+
+function syncDur(min){
+  min=Math.max(15,Math.min(720,min));
+  $('#f-dur').dataset.min=min;$('#f-durtxt').textContent=fmtDur(min);
+  document.querySelectorAll('[data-a="dur-set"]').forEach(function(b){b.setAttribute('aria-pressed',String(parseInt(b.dataset.v,10)===min));});
+  updatePreview();
+}
+function updatePreview(){
+  var p=$('#f-prev');if(!p)return;
+  var min=parseInt($('#f-dur').dataset.min,10),rate=num($('#f-rate').value)||0;
+  p.textContent=fcfa(Math.round(min/60*rate));
+}
+function syncRateChips(){
+  var v=num($('#f-srate').value);
+  document.querySelectorAll('[data-a="rate-set"]').forEach(function(b){b.setAttribute('aria-pressed',String(parseInt(b.dataset.v,10)===v));});
+}
+function syncNoteChips(){
+  var v=$('#f-note').value.trim();
+  document.querySelectorAll('[data-a="note-set"]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v));});
+}
+function syncDue(){
+  var sid=$('#f-sid').value,d=$('#f-date').value;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return;
+  var due=T(sid,ymOf(d)).due;
+  $('#f-due').textContent=fcfa(Math.max(due,0));
+  $('#f-due-wrap').hidden=!(due>0);
+}
+
+/* ---------- Actions de sauvegarde ---------- */
+function saveSession(){
+  var sid=$('#f-sid').value,date=$('#f-date').value,min=parseInt($('#f-dur').dataset.min,10),rate=num($('#f-rate').value),topic=$('#f-topic').value.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return formErr('Choisis une date.');
+  if(!(rate>=RATE_MIN&&rate<=RATE_MAX))return formErr('Choisis un tarif entre 1 000 et 10 000 F de l’heure.');
+  var cfg=S.sheet,touched={};
+  if(cfg.id){var f=findSession(cfg.id);if(f){var old=DATA.months[f.ym];old.sessions=old.sessions.filter(function(x){return x.id!==cfg.id;});touched[f.ym]=1;}}
+  monthDoc(ymOf(date)).sessions.push({id:cfg.id||uid(),sid:sid,date:date,min:min,rate:rate,topic:topic});
+  touched[ymOf(date)]=1;
+  Object.keys(touched).forEach(function(ym){persist('m_'+ym);});
+  S.lastSid=sid;S.ym=ymOf(date);closeSheet();render();toast(cfg.id?'Séance modifiée':'Séance enregistrée');
+}
+function savePayment(){
+  var sid=$('#f-sid').value,date=$('#f-date').value,amount=num($('#f-amt').value),note=$('#f-note').value.trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return formErr('Choisis une date.');
+  if(!(amount>0))return formErr('Indique le montant reçu.');
+  var cfg=S.sheet,touched={};
+  if(cfg.id){var f=findPayment(cfg.id);if(f){var old=DATA.months[f.ym];old.payments=old.payments.filter(function(x){return x.id!==cfg.id;});touched[f.ym]=1;}}
+  monthDoc(ymOf(date)).payments.push({id:cfg.id||uid(),sid:sid,date:date,amount:amount,note:note});
+  touched[ymOf(date)]=1;
+  Object.keys(touched).forEach(function(ym){persist('m_'+ym);});
+  S.ym=ymOf(date);closeSheet();render();toast(cfg.id?'Paiement modifié':'Paiement enregistré');
+}
+function saveStudent(){
+  var name=$('#f-name').value.trim(),rate=num($('#f-srate').value),phone=$('#f-phone').value.trim(),cfg=S.sheet;
+  if(!name)return formErr('Écris le nom de l’élève.');
+  if(!(rate>=RATE_MIN&&rate<=RATE_MAX))return formErr('Choisis un tarif entre 1 000 et 10 000 F de l’heure.');
+  if(cfg.id){var st=studentById(cfg.id);st.name=name;st.rate=rate;st.phone=phone;st.archived=$('#f-arch').checked;}
+  else DATA.students.push({id:uid(),name:name,rate:rate,phone:phone,archived:false});
+  persist('eleves');closeSheet();render();toast(cfg.id?'Élève modifié':'Élève ajouté');
+}
+
+/* ---------- Événements ---------- */
+function armed(b){
+  if(b.dataset.armed)return true;
+  b.dataset.armed='1';var orig=b.textContent;b.textContent='Confirmer la suppression';
+  setTimeout(function(){if(b.isConnected){delete b.dataset.armed;b.textContent=orig;}},4000);
+  return false;
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  var a=b.dataset.a,id=b.dataset.id;
+  switch(a){
+    case 'tab-mois':S.tab='mois';S.sid=null;render();window.scrollTo(0,0);break;
+    case 'tab-eleves':S.tab='eleves';S.sid=null;render();window.scrollTo(0,0);break;
+    case 'prev':S.ym=shiftYm(S.ym,-1);render();break;
+    case 'next':S.ym=shiftYm(S.ym,1);render();break;
+    case 'today':S.ym=ymOf(todayStr());render();break;
+    case 'open-student':S.sid=id;render();window.scrollTo(0,0);break;
+    case 'back':S.sid=null;render();window.scrollTo(0,0);break;
+    case 'new-session':openSheet({type:'session',sid:b.dataset.sid||(S.sid||null)});break;
+    case 'edit-session':openSheet({type:'session',id:id});break;
+    case 'new-payment':openSheet({type:'payment',sid:b.dataset.sid||null});break;
+    case 'edit-payment':openSheet({type:'payment',id:id});break;
+    case 'new-student':openSheet({type:'student'});break;
+    case 'open-reset':openSheet({type:'reset'});break;
+    case 'do-reset':
+      var ks=Object.keys(DATA.months);DATA={students:[],months:{}};
+      persist('eleves');ks.forEach(function(m){persist('m_'+m);});
+      S.sid=null;S.tab='mois';closeSheet();render();toast('Toutes les données ont été effacées');break;
+    case 'edit-student':openSheet({type:'student',id:id});break;
+    case 'close':closeSheet();break;
+    case 'save-session':saveSession();break;
+    case 'save-payment':savePayment();break;
+    case 'save-student':saveStudent();break;
+    case 'del-session':
+      if(!armed(b))break;
+      var fs=findSession(id);if(fs){var d1=DATA.months[fs.ym];d1.sessions=d1.sessions.filter(function(x){return x.id!==id;});persist('m_'+fs.ym);}
+      closeSheet();render();toast('Séance supprimée');break;
+    case 'del-payment':
+      if(!armed(b))break;
+      var fp=findPayment(id);if(fp){var d2=DATA.months[fp.ym];d2.payments=d2.payments.filter(function(x){return x.id!==id;});persist('m_'+fp.ym);}
+      closeSheet();render();toast('Paiement supprimé');break;
+    case 'del-student':
+      if(!armed(b))break;
+      DATA.students=DATA.students.filter(function(x){return x.id!==id;});persist('eleves');
+      if(S.sid===id)S.sid=null;closeSheet();render();toast('Élève supprimé');break;
+    case 'dur-minus':syncDur(parseInt($('#f-dur').dataset.min,10)-15);break;
+    case 'dur-plus':syncDur(parseInt($('#f-dur').dataset.min,10)+15);break;
+    case 'dur-set':syncDur(parseInt(b.dataset.v,10));break;
+    case 'rate-set':$('#f-srate').value=b.dataset.v;$('#f-srate-r').value=b.dataset.v;syncRateChips();break;
+    case 'note-set':$('#f-note').value=b.dataset.v;syncNoteChips();break;
+    case 'pay-all':$('#f-amt').value=String(Math.max(T($('#f-sid').value,ymOf($('#f-date').value)).due,0));break;
+    case 'copy':
+      var st=studentById(b.dataset.sid);if(!st)break;
+      var txt=statementText(st,S.ym);
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(function(){toast('Relevé copié');},function(){openSheet({type:'text',sid:st.id});});
+      }else{openSheet({type:'text',sid:st.id});}
+      break;
+  }
+});
+document.addEventListener('input',function(e){
+  var t=e.target.id;
+  if(t==='f-rate'){var r1=$('#f-rate-r');if(r1)r1.value=num(e.target.value)||3000;updatePreview();}
+  else if(t==='f-rate-r'){$('#f-rate').value=e.target.value;updatePreview();}
+  else if(t==='f-srate'){var r2=$('#f-srate-r');if(r2)r2.value=num(e.target.value)||3000;syncRateChips();}
+  else if(t==='f-srate-r'){$('#f-srate').value=e.target.value;syncRateChips();}
+  else if(t==='f-note')syncNoteChips();
+  else if(t==='f-amt'){var er=$('#f-err');if(er)er.hidden=true;}
+});
+document.addEventListener('change',function(e){
+  var t=e.target.id;
+  if(!S.sheet)return;
+  if(S.sheet.type==='session'&&t==='f-sid'&&!S.sheet.id){
+    var st=studentById(e.target.value);if(st){$('#f-rate').value=st.rate;$('#f-rate-r').value=st.rate;updatePreview();}
+  }
+  if(S.sheet.type==='payment'&&(t==='f-sid'||t==='f-date'))syncDue();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.sheet)closeSheet();});
+
+init();
+})();
+</script>
+
+</body></html>
